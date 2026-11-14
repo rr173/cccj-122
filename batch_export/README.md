@@ -154,3 +154,32 @@ python3 -m warehouse_backup.cli prune   backups --keep 2 --keep 4 --apply
 退出码：`2` 调用错误、`3` 备份仓损坏、`4` 目标写出失败。目录格式、父链
 块来源规则、离线恢复前提、保留语义与演练各阶段说明详见
 [`warehouse_backup/README.md`](warehouse_backup/README.md)。
+
+
+---
+
+## 离线 WAL 变更解码（`wal_decode/`）
+
+新增一个**离线**的逐事务行变更解码入口：给定一份起点主库、随后产生的原生
+SQLite WAL 与追踪表/行身份列，只凭 WAL 中的**页版本**（无 SQL 文本、无预置
+INSERT/UPDATE/DELETE 事件）按真实提交边界重建逐事务的行净变化流。它校验 WAL
+32 字节头与逐帧盐值/滚动校验和（区分大端字段与 magic 决定的校验字节序，支持
+4096/65536 页长与两种合法 magic），在工具自有临时目录把已提交页覆盖到工作映像后
+用只读 SQLite 查询差异，从不把原库+WAL 交给 SQLite 自动恢复、不生成 `-shm`、
+不一次性读入整个 WAL，也不堆积每个提交的全表行。
+
+```bash
+python3 -m unittest discover -v          # 211 个测试（原 169 + 新增 42）
+python3 -I demo/wal_decode_drill/run_wal_drill.py   # 146 项端到端验收检查
+
+python3 -m wal_decode.cli build-manifest --db base.sqlite --wal c.sqlite-wal \
+    --table facts=id --output manifest.json
+python3 -m wal_decode.cli decode --manifest manifest.json --out out/
+```
+
+三类结果区分退出码：`0` 完整解析（空 WAL、无变化提交也算成功）、`10` 保留完整
+提交但尾部未完成（输出带 `INCOMPLETE.txt` 标记）、`3` 损坏/不支持、`2` 输入校验
+错误。净变化只能描述提交前后差异，**不能反推逐语句历史**。采集前提（TRUNCATE
+checkpoint 后复制、连接存活、关自动 checkpoint、单 checkpoint 周期、静止点复制）、
+输出字段与限制详见 [`wal_decode/README.md`](wal_decode/README.md)。该入口不是备份
+存储、恢复命令或日志消费状态库，原有四个入口均保持不变。

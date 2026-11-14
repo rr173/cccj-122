@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Drill source S2, same coordinate space as S1:
+     - Revenue 1000.00 at c-dur  -> same-value duplicate of S1;
+     - Assets  700    at c-inst -> genuine conflict with S1's 500;
+     - Zero    xsi:nil at c-inst-> nil fact distinct from S1's 42.00;
+     - Note same text/lang as S1 -> another same-value duplicate. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:m="http://example.com/units"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <context id="d">
+    <entity><identifier scheme="http://example.com/lei">LEI-WAL-1</identifier></entity>
+    <period>
+      <startDate>2024-01-01</startDate>
+      <endDate>2024-12-31</endDate>
+    </period>
+  </context>
+
+  <context id="i">
+    <entity><identifier scheme="http://example.com/lei">LEI-WAL-1</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <unit id="u"><measure>m:USD</measure></unit>
+
+  <ex:Revenue contextRef="d" unitRef="u" decimals="2">1000.00</ex:Revenue>
+  <ex:Assets contextRef="i" unitRef="u" decimals="0">700</ex:Assets>
+  <ex:Zero contextRef="i" unitRef="u" xsi:nil="true"/>
+  <ex:Note contextRef="i" xml:lang="en">opening note</ex:Note>
+
+</xbrl>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Drill source S1: establishes facts that S2 will duplicate, conflict with,
+     and nil out. Uses the same concept dictionary as the shipping demo. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:m="http://example.com/units"
+      xmlns:xbrldi="http://xbrl.org/2003/xbrldi"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <context id="c-dur">
+    <entity><identifier scheme="http://example.com/lei">LEI-WAL-1</identifier></entity>
+    <period>
+      <startDate>2024-01-01</startDate>
+      <endDate>2024-12-31</endDate>
+    </period>
+  </context>
+
+  <context id="c-inst">
+    <entity><identifier scheme="http://example.com/lei">LEI-WAL-1</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <unit id="u-money"><measure>m:USD</measure></unit>
+
+  <ex:Revenue contextRef="c-dur" unitRef="u-money" decimals="2">1000.00</ex:Revenue>
+  <ex:Assets contextRef="c-inst" unitRef="u-money" decimals="0">500</ex:Assets>
+  <ex:Zero contextRef="c-inst" unitRef="u-money" decimals="2">42.00</ex:Zero>
+  <ex:Note contextRef="c-inst" xml:lang="en">opening note</ex:Note>
+
+</xbrl>
