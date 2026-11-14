@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Refused file: 2024-02-30 is not a legal YYYY-MM-DD date. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co">
+  <context id="c1">
+    <entity><identifier scheme="urn:lei">E-1</identifier></entity>
+    <period><instant>2024-02-30</instant></period>
+  </context>
+  <unit id="u1"><measure>ex:USD</measure></unit>
+  <ex:Revenue contextRef="c1" unitRef="u1" decimals="2">10.00</ex:Revenue>
+</xbrl>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo instance A.
+
+     Hand-written so that the same *business* context appears elsewhere with a
+     different context ID, different prefixes and a different dimension order
+     (demo-B's ctx-shared must match c-alpha exactly).
+
+     Deliberately demonstrates:
+       - a fact (Revenue) that references context c-alpha / unit u-money before
+         either of them is declared (forward reference);
+       - a local rebinding of prefix "m" inside the divide denominator, so the
+         same written measure "m:USD" expands to a *different* namespace there;
+       - divides in both directions (shares / USD here, USD / shares in demo-B)
+         that must NOT merge;
+       - a product unit written with measures in one order (demo-B writes the
+         reverse order);
+       - exact decimals: a very large integer, a very small fractional value, and
+         1.0 vs 1.00 written differently at the same coordinate;
+       - xsi:nil distinct from 0;
+       - a text fact with xml:lang="en" and an untrimmed whitespace value.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:m="http://example.com/units"
+      xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!-- Forward reference: this fact precedes its context and unit declarations. -->
+  <ex:Revenue contextRef="c-alpha" unitRef="u-money" decimals="2">1234.50</ex:Revenue>
+
+  <ex:Tiny contextRef="c-beta" unitRef="u-product" decimals="12">0.000000000001</ex:Tiny>
+
+  <context id="c-alpha">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-001</identifier>
+    </entity>
+    <period>
+      <startDate>2024-01-01</startDate>
+      <endDate>2024-12-31</endDate>
+    </period>
+    <scenario>
+      <xbrldi:explicitMember dimension="ex:ProductLine">ex:Retail</xbrldi:explicitMember>
+      <xbrldi:explicitMember dimension="ex:Region">ex:EMEA</xbrldi:explicitMember>
+    </scenario>
+  </context>
+
+  <context id="c-beta">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-001</identifier>
+    </entity>
+    <period>
+      <instant>2024-12-31</instant>
+    </period>
+  </context>
+
+  <unit id="u-money">
+    <measure>m:USD</measure>
+  </unit>
+
+  <!-- Direction shares/USD, with the denominator prefix rebound locally. -->
+  <unit id="u-ratio">
+    <divide>
+      <unitNumerator><measure>m:shares</measure></unitNumerator>
+      <unitDenominator>
+        <measure xmlns:m="http://example.com/legacy-units">m:USD</measure>
+      </unitDenominator>
+    </divide>
+  </unit>
+
+  <!-- A product: USD * shares, written in this order. -->
+  <unit id="u-product">
+    <measure>m:USD</measure>
+    <measure>m:shares</measure>
+  </unit>
+
+  <ex:Revenue contextRef="c-beta" unitRef="u-money" decimals="2">1.0</ex:Revenue>
+  <ex:Revenue contextRef="c-beta" unitRef="u-money" decimals="2">1.00</ex:Revenue>
+
+  <ex:Huge contextRef="c-beta" unitRef="u-money" decimals="INF">1234567890123456789012345678901234567890</ex:Huge>
+  <ex:Nothing contextRef="c-beta" unitRef="u-money" xsi:nil="true"/>
+  <ex:Zero contextRef="c-beta" unitRef="u-money" decimals="2">0</ex:Zero>
+
+  <ex:Note contextRef="c-beta" xml:lang="en">  retail segment  </ex:Note>
+
+</xbrl>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo instance B.
+
+     Same business coordinates as part of demo-A, written differently:
+       - context id "ctx-shared" instead of "c-alpha"/"c-beta", dimensions in the
+         entity/segment element and in reversed order;
+       - prefix "co" for concepts, "cur"/"sh" for measures (never reused);
+       - a divide USD/shares, the exact reverse of demo-A's shares/USD, which
+         must therefore stay a separate unit;
+       - a product unit in reversed measure order: same product as demo-A,
+         so it MUST merge even though the order differs;
+       - Revenue 1.000 at the instant coordinate: agrees numerically with
+         demo-A's 1.0 / 1.00 -> consistent duplicate across files;
+       - Revenue 1250.00 at the duration coordinate: a genuine conflict with
+         demo-A's 1234.50 -> both candidates returned, never "last file wins";
+       - Notes text with different whitespace -> a real text conflict.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:co="http://example.com/co"
+      xmlns:cur="http://example.com/units"
+      xmlns:sh="http://example.com/units"
+      xmlns:xbrldi="http://xbrl.org/2006/xbrldi">
+
+  <context id="ctx-shared">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-001</identifier>
+      <segment>
+        <xbrldi:explicitMember dimension="co:Region">co:EMEA</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="co:ProductLine">co:Retail</xbrldi:explicitMember>
+      </segment>
+    </entity>
+    <period>
+      <startDate>2024-01-01</startDate>
+      <endDate>2024-12-31</endDate>
+    </period>
+  </context>
+
+  <context id="ctx-shared-instant">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-001</identifier>
+    </entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <!-- Reverse direction of demo-A's u-ratio: USD / shares != shares / USD. -->
+  <unit id="u-ratio">
+    <divide>
+      <unitNumerator><measure>cur:USD</measure></unitNumerator>
+      <unitDenominator><measure>sh:shares</measure></unitDenominator>
+    </divide>
+  </unit>
+
+  <unit id="u-money">
+    <measure>cur:USD</measure>
+  </unit>
+
+  <!-- Same product as demo-A's USD*shares, written in the other order. -->
+  <unit id="u-product">
+    <measure>sh:shares</measure>
+    <measure>cur:USD</measure>
+  </unit>
+
+  <co:Revenue contextRef="ctx-shared" unitRef="u-money" decimals="2">1250.00</co:Revenue>
+  <co:Revenue contextRef="ctx-shared-instant" unitRef="u-money" decimals="3">1.000</co:Revenue>
+  <co:Tiny contextRef="ctx-shared-instant" unitRef="u-product" decimals="12">0.000000000001</co:Tiny>
+
+  <co:Zero contextRef="ctx-shared-instant" unitRef="u-money" decimals="2">0.00</co:Zero>
+
+  <!-- Same text coordinate as demo-A's Note; different whitespace. -->
+  <co:Note contextRef="ctx-shared-instant" xml:lang="en">retail segment</co:Note>
+
+</xbrl>

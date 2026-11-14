@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Refused file: xsi:nil="true" but the fact still carries a value. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <context id="c1">
+    <entity><identifier scheme="urn:lei">E-1</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+  <unit id="u1"><measure>ex:USD</measure></unit>
+  <ex:Revenue contextRef="c1" unitRef="u1" decimals="2" xsi:nil="true">10.00</ex:Revenue>
+</xbrl>

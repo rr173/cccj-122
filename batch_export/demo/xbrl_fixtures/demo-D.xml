@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo instance D.
+
+     Text facts at the same coordinate except for xml:lang are different fact
+     coordinates (language is part of the coordinate). The language is inherited
+     from an ancestor xml:lang and can be overridden locally: note-en/note-fr
+     below end up with "en"/"fr", while the untagged fact keeps the root's "de".
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xml:lang="de">
+
+  <context id="d-c1">
+    <entity><identifier scheme="http://example.com/lei">LEI-002</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <ex:Note contextRef="d-c1" xml:lang="en">alpha</ex:Note>
+  <ex:Note contextRef="d-c1" xml:lang="fr">alpha</ex:Note>
+  <ex:Note contextRef="d-c1">alpha</ex:Note>
+  <ex:Note contextRef="d-c1" xml:lang="en">beta</ex:Note>
+
+</xbrl>

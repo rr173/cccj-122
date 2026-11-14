@@ -1,0 +1,11 @@
+{
+  "concepts": [
+    {"namespace": "http://example.com/co", "name": "Revenue", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Assets", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Tiny", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Huge", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Nothing", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Zero", "type": "decimal"},
+    {"namespace": "http://example.com/co", "name": "Note", "type": "text"}
+  ]
+}

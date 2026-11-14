@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo instance C: entity scheme is part of the context identity.
+
+     Both contexts name the same identifier text "LEI-001" and the same period,
+     but under different schemes. They must NOT be merged: two query results.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co">
+
+  <context id="scheme-a">
+    <entity><identifier scheme="http://example.com/lei">LEI-001</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <context id="scheme-b">
+    <entity><identifier scheme="http://example.com/internal-id">LEI-001</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+
+  <unit id="u"><measure>ex:USD</measure></unit>
+
+  <ex:Assets contextRef="scheme-a" unitRef="u" decimals="0">100</ex:Assets>
+  <ex:Assets contextRef="scheme-b" unitRef="u" decimals="0">100</ex:Assets>
+
+</xbrl>

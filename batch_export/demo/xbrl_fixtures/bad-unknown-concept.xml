@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Refused file: the concept is not in the local dictionary. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co">
+  <context id="c1">
+    <entity><identifier scheme="urn:lei">E-1</identifier></entity>
+    <period><instant>2024-12-31</instant></period>
+  </context>
+  <unit id="u1"><measure>ex:USD</measure></unit>
+  <ex:UndefinedConcept contextRef="c1" unitRef="u1" decimals="2">10.00</ex:UndefinedConcept>
+</xbrl>
