@@ -125,3 +125,32 @@ python3 -m calc_check.cli check warehouse.sqlite calculations.xml \
 全程精确 Decimal 运算，结论不构成对财务真实性的证明。支持范围、链接库 XML
 结构、映射表格式、priority/prohibition/消重/环规则与报告字段详见
 [`calc_check/README.md`](calc_check/README.md)。
+
+
+---
+
+## 事实仓灾备演练（`warehouse_backup/`）
+
+在已接入的 SQLite 事实仓之上，新增**可重复演练**的灾备能力：生产接入还在
+运行时（WAL 模式、持续写入均可）用 SQLite 在线备份 API 取出一致映像，按
+65536 字节定长切块、按内容摘要复用地保存多份有独立编号的备份；后续备份可
+显式指定父备份，只登记变化的块，未变块沿父链继承。恢复只凭备份目录与离线
+目标路径：逐层解析父链、逐块与整映像校验、SQLite 完整性检查全部通过后才
+原子交出；保留清理先预览再应用，父链依赖与跨分支共享块绝不误删，损坏的仓
+拒绝破坏性操作。它不筛选业务行、不发送分片、不重做接入或核查，也不修改
+既有事实表。
+
+```bash
+python3 -m unittest discover -v        # 169 个测试（原 129 + 新增 40）
+python3 demo/run_backup_drill.py       # 灾备演练：12 个阶段、163 项检查
+
+python3 -m warehouse_backup.cli create  backups --db warehouse.sqlite
+python3 -m warehouse_backup.cli create  backups --db warehouse.sqlite --parent 1
+python3 -m warehouse_backup.cli check   backups
+python3 -m warehouse_backup.cli restore backups --id 2 --target restored.sqlite
+python3 -m warehouse_backup.cli prune   backups --keep 2 --keep 4 --apply
+```
+
+退出码：`2` 调用错误、`3` 备份仓损坏、`4` 目标写出失败。目录格式、父链
+块来源规则、离线恢复前提、保留语义与演练各阶段说明详见
+[`warehouse_backup/README.md`](warehouse_backup/README.md)。
