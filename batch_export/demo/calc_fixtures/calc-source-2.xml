@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Calc-check demo, source S2: agreeing duplicates with different precision.
+
+     Every fact here lands on a business coordinate already populated by S1
+     (different context/unit ids, same entity/period/dimensions/unit identity).
+     Values are equal where noted, so they merge into one coordinate with
+     multiple candidates; their precision intervals are intersected. The
+     DupItem duplicate must still count as exactly one weighted item.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:c="http://example.com/calc"
+      xmlns:cur="http://example.com/units">
+
+  <context id="ctx-main">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-900</identifier>
+    </entity>
+    <period><startDate>2024-01-01</startDate><endDate>2024-12-31</endDate></period>
+  </context>
+
+  <unit id="u-money"><measure>cur:USD</measure></unit>
+
+  <!-- Equal value to S1, coarser decimals: the overlap verdict must remain
+       consistent after intersecting candidate intervals. Values are written
+       identically on purpose (100 / 60.3 / 40.2) so they are same-value
+       duplicates, not conflicting candidates. -->
+  <c:OverlapTotal contextRef="ctx-main" unitRef="u-money" decimals="-1">100</c:OverlapTotal>
+  <c:OverlapA     contextRef="ctx-main" unitRef="u-money" decimals="0">60.3</c:OverlapA>
+  <c:OverlapB     contextRef="ctx-main" unitRef="u-money" decimals="0">40.2</c:OverlapB>
+
+  <!-- Duplicate equal facts for the dedicated duplicate-edge relationship.
+       Two total candidates and two item candidates, one weighted item only. -->
+  <c:DupTotal contextRef="ctx-main" unitRef="u-money" decimals="2">55</c:DupTotal>
+  <c:DupTotal contextRef="ctx-main" unitRef="u-money" decimals="1">55.0</c:DupTotal>
+  <c:DupItem  contextRef="ctx-main" unitRef="u-money" decimals="2">55</c:DupItem>
+  <c:DupItem  contextRef="ctx-main" unitRef="u-money" decimals="3">55.000</c:DupItem>
+
+  <!-- Zero repeats as an equal duplicate across sources (still a real 0). -->
+  <c:ZeroTotal contextRef="ctx-main" unitRef="u-money" decimals="1">0</c:ZeroTotal>
+  <c:ZeroItem  contextRef="ctx-main" unitRef="u-money" decimals="1">0.0</c:ZeroItem>
+
+  <!-- The broken-cycle chain numbers agree under the effective edges. -->
+  <c:CycleA contextRef="ctx-main" unitRef="u-money" decimals="2">30</c:CycleA>
+  <c:CycleB contextRef="ctx-main" unitRef="u-money" decimals="2">30</c:CycleB>
+
+</xbrl>

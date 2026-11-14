@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: the effective graph contains a genuine long cycle
+     CycleA -> CycleB -> CycleC -> CycleA. Must be refused with the concept
+     path named in the error. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-cycle">
+    <link:loc xlink:type="locator" xlink:href="#cycle_a" xlink:label="c-a"/>
+    <link:loc xlink:type="locator" xlink:href="#cycle_b" xlink:label="c-b"/>
+    <link:loc xlink:type="locator" xlink:href="#cycle_c" xlink:label="c-c"/>
+    <link:calculationArc xlink:type="arc" xlink:from="c-a" xlink:to="c-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="c-b" xlink:to="c-c"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="c-c" xlink:to="c-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+</link:linkbase>

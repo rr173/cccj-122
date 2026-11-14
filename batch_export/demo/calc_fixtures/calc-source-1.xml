@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Calc-check demo, source S1: the main reporting source.
+
+     All facts use one shared no-dimension duration context c1, plus dimension
+     contexts (cDimA/cDimB) and distinct units (uUSD/uEUR/uShares) so coordinate
+     isolation can be proven. Values and decimals are hand-picked for specific
+     interval outcomes; see demo/expected/calc_expectations.py.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:c="http://example.com/calc"
+      xmlns:u="http://example.com/units"
+      xmlns:xbrldi="http://xbrl.org/2006/xbrldi">
+
+  <context id="c1">
+    <entity><identifier scheme="http://example.com/lei">LEI-900</identifier></entity>
+    <period><startDate>2024-01-01</startDate><endDate>2024-12-31</endDate></period>
+  </context>
+
+  <context id="cDimA">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-900</identifier>
+      <segment><xbrldi:explicitMember dimension="c:Channel">c:Online</xbrldi:explicitMember></segment>
+    </entity>
+    <period><startDate>2024-01-01</startDate><endDate>2024-12-31</endDate></period>
+  </context>
+
+  <context id="cDimB">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-900</identifier>
+      <segment><xbrldi:explicitMember dimension="c:Channel">c:Retail</xbrldi:explicitMember></segment>
+    </entity>
+    <period><startDate>2024-01-01</startDate><endDate>2024-12-31</endDate></period>
+  </context>
+
+  <unit id="uUSD"><measure>u:USD</measure></unit>
+  <unit id="uEUR"><measure>u:EUR</measure></unit>
+  <unit id="uShares"><measure>u:shares</measure></unit>
+
+  <!-- 1. Display values differ (100 vs 100.50) but intervals overlap: consistent. -->
+  <c:OverlapTotal contextRef="c1" unitRef="uUSD" decimals="0">100</c:OverlapTotal>
+  <c:OverlapA     contextRef="c1" unitRef="uUSD" decimals="1">60.3</c:OverlapA>
+  <c:OverlapB     contextRef="c1" unitRef="uUSD" decimals="1">40.2</c:OverlapB>
+
+  <!-- 2. INF point intervals that genuinely contradict: inconsistent. -->
+  <c:ExactTotal contextRef="c1" unitRef="uUSD" decimals="INF">1000</c:ExactTotal>
+  <c:ExactA     contextRef="c1" unitRef="uUSD" decimals="INF">600</c:ExactA>
+  <c:ExactB     contextRef="c1" unitRef="uUSD" decimals="INF">401</c:ExactB>
+
+  <!-- 3a. Exact endpoint contact: sum upper = total lower = 99.5, consistent. -->
+  <c:TouchTotal contextRef="c1" unitRef="uUSD" decimals="0">100</c:TouchTotal>
+  <c:TouchA     contextRef="c1" unitRef="uUSD" decimals="1">50.5</c:TouchA>
+  <c:TouchB     contextRef="c1" unitRef="uUSD" decimals="1">49.9</c:TouchB>
+
+  <!-- 3b. Just separated: sum upper 99.45 < total lower 99.5, inconsistent. -->
+  <c:GapTotal contextRef="c1" unitRef="uUSD" decimals="0">100</c:GapTotal>
+  <c:GapA     contextRef="c1" unitRef="uUSD" decimals="1">50.4</c:GapA>
+  <c:GapB     contextRef="c1" unitRef="uUSD" decimals="1">48.9</c:GapB>
+
+  <!-- 4. Negative weight and negative decimals: 1500 - 200 = 1300, consistent. -->
+  <c:SignedTotal  contextRef="c1" unitRef="uUSD" decimals="-2">1300</c:SignedTotal>
+  <c:SignedGross  contextRef="c1" unitRef="uUSD" decimals="-2">1500</c:SignedGross>
+  <c:SignedReturn contextRef="c1" unitRef="uUSD" decimals="-2">200</c:SignedReturn>
+
+  <!-- 5. Coarse decimals make a large displayed gap compatible: consistent. -->
+  <c:CoarseTotal contextRef="c1" unitRef="uUSD" decimals="-3">10000</c:CoarseTotal>
+  <c:CoarseA     contextRef="c1" unitRef="uUSD" decimals="-3">6000</c:CoarseA>
+  <c:CoarseB     contextRef="c1" unitRef="uUSD" decimals="-3">4500</c:CoarseB>
+
+  <!-- 6. Beyond default Decimal precision: point intervals, exact equality. -->
+  <c:HugeTotal contextRef="c1" unitRef="uUSD" decimals="INF">1234567890123456789012345678901234567890</c:HugeTotal>
+  <c:HugeA     contextRef="c1" unitRef="uUSD" decimals="INF">1000000000000000000000000000000000000000</c:HugeA>
+  <c:HugeB     contextRef="c1" unitRef="uUSD" decimals="INF">234567890123456789012345678901234567890</c:HugeB>
+
+  <!-- Same items, point intervals, total deliberately off by 1 at the 40th
+       digit: inconsistent, and only exact arithmetic can separate them. -->
+  <c:HugeDisjointTotal contextRef="c1" unitRef="uUSD" decimals="INF">1234567890123456789012345678901234567891</c:HugeDisjointTotal>
+
+  <!-- 7. Zero is a real reported value and calculates exactly: consistent. -->
+  <c:ZeroTotal contextRef="c1" unitRef="uUSD" decimals="2">0</c:ZeroTotal>
+  <c:ZeroItem  contextRef="c1" unitRef="uUSD" decimals="2">0.00</c:ZeroItem>
+
+  <!-- 8. Nil total and nil item: both indeterminate, never treated as zero. -->
+  <c:NilTotal contextRef="c1" unitRef="uUSD" xsi:nil="true"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+  <c:NilItem  contextRef="c1" unitRef="uUSD" xsi:nil="true"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+
+  <!-- 9. Missing total (no MissingTotal fact anywhere); items present. -->
+  <c:MissingItemA contextRef="c1" unitRef="uUSD" decimals="2">30</c:MissingItemA>
+  <c:MissingItemB contextRef="c1" unitRef="uUSD" decimals="2">70</c:MissingItemB>
+
+  <!-- 10. Conflicting item candidates at one coordinate (S3 adds the clash):
+          here a single 40, consistent for S1 alone. -->
+  <c:ConflictTotal contextRef="c1" unitRef="uUSD" decimals="2">40</c:ConflictTotal>
+  <c:ConflictItem  contextRef="c1" unitRef="uUSD" decimals="2">40</c:ConflictItem>
+
+  <!-- 11. Dimensions: c1 item with no dimension must not pair with dim totals. -->
+  <c:DimItem contextRef="c1"    unitRef="uUSD" decimals="2">10</c:DimItem>
+  <c:DimItem contextRef="cDimA" unitRef="uUSD" decimals="2">10</c:DimItem>
+  <c:DimTotal contextRef="cDimA" unitRef="uUSD" decimals="2">10</c:DimTotal>
+  <!-- cDimB has a total but no item -> indeterminate at cDimB. -->
+  <c:DimTotal contextRef="cDimB" unitRef="uUSD" decimals="2">25</c:DimTotal>
+
+  <!-- 12. Units: EUR total/item consistent in EUR; USD item never pairs. -->
+  <c:EurTotal contextRef="c1" unitRef="uEUR" decimals="2">80</c:EurTotal>
+  <c:EurItem  contextRef="c1" unitRef="uEUR" decimals="2">80</c:EurItem>
+  <c:EurItem  contextRef="c1" unitRef="uUSD" decimals="2">999</c:EurItem>
+
+  <!-- 13. Two layers, no fabricated intermediate: LayerMid reported, leaf reported. -->
+  <c:LayerTop  contextRef="c1" unitRef="uUSD" decimals="2">100</c:LayerTop>
+  <c:LayerMid  contextRef="c1" unitRef="uUSD" decimals="2">60</c:LayerMid>
+  <c:LayerLeaf contextRef="c1" unitRef="uUSD" decimals="2">60</c:LayerLeaf>
+
+  <!-- 14. Priority-override role: effective weight becomes 1 after override. -->
+  <c:IsolatedTotal contextRef="c1" unitRef="uUSD" decimals="2">70</c:IsolatedTotal>
+  <c:IsolatedItem  contextRef="c1" unitRef="uUSD" decimals="2">70</c:IsolatedItem>
+
+  <!-- 15. Duplicate equal-valued candidates live in S2 (DupTotal/DupItem). -->
+
+  <!-- 16. Broken-cycle role facts: chain A->B->C, prohibited C->A edge. -->
+  <c:CycleA contextRef="c1" unitRef="uUSD" decimals="2">30</c:CycleA>
+  <c:CycleB contextRef="c1" unitRef="uUSD" decimals="2">30</c:CycleB>
+  <c:CycleC contextRef="c1" unitRef="uUSD" decimals="2">12</c:CycleC>
+
+</xbrl>

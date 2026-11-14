@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: an arc xlink:from references a label that no link:loc declares in
+     this extended link (a dangling endpoint). Must be refused with location. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-dangling">
+    <link:loc xlink:type="locator" xlink:href="#dangling_total" xlink:label="d-tot"/>
+    <link:calculationArc xlink:type="arc" xlink:from="d-tot" xlink:to="no-such-label"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+</link:linkbase>

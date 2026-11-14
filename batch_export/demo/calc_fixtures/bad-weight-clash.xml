@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: two optional arcs at the SAME highest priority give different
+     weights for one (total, item) relation. The whole linkbase must be
+     refused with a located error, never partially checked. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-weight-clash">
+    <link:loc xlink:type="locator" xlink:href="#weight_clash_total" xlink:label="w-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#weight_clash_item"  xlink:label="w-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="w-tot" xlink:to="w-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="3"/>
+    <link:calculationArc xlink:type="arc" xlink:from="w-tot" xlink:to="w-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="2" priority="3"/>
+  </link:calculationLink>
+</link:linkbase>

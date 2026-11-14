@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Calc-check demo, source S3: genuine conflicts and extra edge cases.
+
+     Including S3 must turn previously determinate coordinates into
+     indeterminate ones (conflicting candidates), proving the checker never
+     picks one candidate at random. S1+S2 alone stay unaffected by these facts.
+-->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:c="http://example.com/calc"
+      xmlns:m="http://example.com/units">
+
+  <context id="c-900">
+    <entity>
+      <identifier scheme="http://example.com/lei">LEI-900</identifier>
+    </entity>
+    <period><startDate>2024-01-01</startDate><endDate>2024-12-31</endDate></period>
+  </context>
+
+  <unit id="u-usd"><measure>m:USD</measure></unit>
+
+  <!-- Same coordinate as S1's ConflictItem (40) but a different value: conflict. -->
+  <c:ConflictItem  contextRef="c-900" unitRef="u-usd" decimals="2">45</c:ConflictItem>
+  <!-- And the total also gets a disagreeing second candidate. -->
+  <c:ConflictTotal contextRef="c-900" unitRef="u-usd" decimals="2">41</c:ConflictTotal>
+
+  <!-- Nil candidate alongside numeric ones at the NilItem coordinate: conflict
+       of nil vs value, which is indeterminate (not zero, not one winner). -->
+  <c:NilItem contextRef="c-900" unitRef="u-usd" decimals="2">5</c:NilItem>
+
+  <!-- SignedTotal in S1 was consistent at 1300 +/- 50. This extra-rough
+       candidate keeps the signed relationship consistent, exercising the
+       negative-weight path with a third source intersecting intervals. -->
+  <c:SignedTotal  contextRef="c-900" unitRef="u-usd" decimals="-3">1000</c:SignedTotal>
+
+</xbrl>

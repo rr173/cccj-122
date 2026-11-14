@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: the same xlink:label is declared twice inside ONE extended link.
+     Labels are link-scoped, so this is a duplicate-label refusal. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-dup-label">
+    <link:loc xlink:type="locator" xlink:href="#overlap_total" xlink:label="dup"/>
+    <link:loc xlink:type="locator" xlink:href="#overlap_a"     xlink:label="dup"/>
+    <link:calculationArc xlink:type="arc" xlink:from="dup" xlink:to="dup"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+</link:linkbase>

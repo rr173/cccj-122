@@ -96,3 +96,32 @@ python3 demo/run_demo.py               # 小型实例 + 独立手写预期，逐
 ```
 
 支持范围、身份规则、命令行与取舍详见 [`xbrl_ingest/README.md`](xbrl_ingest/README.md)。
+
+
+---
+
+## 本地计算关系核查（`calc_check/`）
+
+在已接入的 SQLite 事实库之上，新增一个**只读**的计算关系核查入口。调用者给出
+本地 calculation linkbase XML、一份显式 `#片段ID → 展开概念名` 映射表和选中的
+来源 ID，即可得到每条关系在每个业务坐标上的 `consistent` /
+`inconsistent` / `indeterminate` 结论与闭区间解释。它不重新接入实例、不补数、
+不改值，也不把任何结果写回事实库（以 SQLite `mode=ro` 打开，无 wal/journal 侧
+车文件）；接入与导出入口保持不变。
+
+```bash
+python3 -m unittest discover -v        # 129 个测试（原 75 + 新增 54）
+python3 -I demo/run_calc_demo.py       # 手写关系+事实，96 项手写断言逐项核对
+bash demo/run_calc_cli_demo.sh         # 终端命令端到端走查（含退出码区分）
+
+python3 -m calc_check.cli check warehouse.sqlite calculations.xml \
+    --mapping locator_mapping.json --dict concepts.json \
+    --source SRC1 --source SRC2 --report report.json
+```
+
+退出码区分三类结果：`2` 调用错误、`3` 关系定义错误（核查未运行）、
+`4` 业务不相容（`inconsistent`）、`0` 无不相容（可能含 `indeterminate`）。
+精度采用明确的封闭区间口径 `[v-0.5×10^(-d), v+0.5×10^(-d)]`（INF 为点区间），
+全程精确 Decimal 运算，结论不构成对财务真实性的证明。支持范围、链接库 XML
+结构、映射表格式、priority/prohibition/消重/环规则与报告字段详见
+[`calc_check/README.md`](calc_check/README.md)。

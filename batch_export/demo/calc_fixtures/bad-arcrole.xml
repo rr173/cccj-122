@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: an arcrole other than the standard summation-item URI. Refused. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-arcrole">
+    <link:loc xlink:type="locator" xlink:href="#overlap_total" xlink:label="t"/>
+    <link:loc xlink:type="locator" xlink:href="#overlap_a"     xlink:label="a"/>
+    <link:calculationArc xlink:type="arc" xlink:from="t" xlink:to="a"
+                         xlink:arcrole="http://example.com/arcrole/not-summation"
+                         weight="1"/>
+  </link:calculationLink>
+</link:linkbase>

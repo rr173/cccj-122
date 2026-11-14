@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invalid: an effective self-loop (a concept summing itself). Refused with
+     the offending concept named. -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/bad-self-loop">
+    <link:loc xlink:type="locator" xlink:href="#cycle_a" xlink:label="a"/>
+    <link:calculationArc xlink:type="arc" xlink:from="a" xlink:to="a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+</link:linkbase>

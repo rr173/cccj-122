@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written calculation linkbase for the calc-check demo.
+
+     Same-role relationships are deliberately spread across more than one
+     calculationLink to prove that links sharing a role form one network while
+     labels stay scoped to their own extended link: the same xlink:label text
+     ("shared-item") appears in two links and resolves to different fragments.
+-->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- ============ network role R1: the precision-interval scenarios ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/interval-cases">
+
+    <link:loc xlink:type="locator" xlink:href="#overlap_total" xlink:label="ov-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#overlap_a"     xlink:label="ov-a"/>
+    <link:loc xlink:type="locator" xlink:href="#overlap_b"     xlink:label="ov-b"/>
+    <link:calculationArc xlink:type="arc"
+                         xlink:from="ov-tot" xlink:to="ov-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="0" use="optional"/>
+    <link:calculationArc xlink:type="arc"
+                         xlink:from="ov-tot" xlink:to="ov-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#exact_total" xlink:label="ex-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#exact_a"     xlink:label="ex-a"/>
+    <link:loc xlink:type="locator" xlink:href="#exact_b"     xlink:label="ex-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="ex-tot" xlink:to="ex-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="ex-tot" xlink:to="ex-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#touch_total" xlink:label="tc-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#touch_a"     xlink:label="tc-a"/>
+    <link:loc xlink:type="locator" xlink:href="#touch_b"     xlink:label="tc-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="tc-tot" xlink:to="tc-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="tc-tot" xlink:to="tc-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#gap_total" xlink:label="gp-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#gap_a"     xlink:label="gp-a"/>
+    <link:loc xlink:type="locator" xlink:href="#gap_b"     xlink:label="gp-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="gp-tot" xlink:to="gp-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="gp-tot" xlink:to="gp-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#signed_total"  xlink:label="sg-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#signed_gross"  xlink:label="sg-g"/>
+    <link:loc xlink:type="locator" xlink:href="#signed_return" xlink:label="sg-r"/>
+    <link:calculationArc xlink:type="arc" xlink:from="sg-tot" xlink:to="sg-g"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="sg-tot" xlink:to="sg-r"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="-1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#coarse_total" xlink:label="co-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#coarse_a"     xlink:label="co-a"/>
+    <link:loc xlink:type="locator" xlink:href="#coarse_b"     xlink:label="co-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="co-tot" xlink:to="co-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="co-tot" xlink:to="co-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#huge_total"          xlink:label="hg-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#huge_a"              xlink:label="hg-a"/>
+    <link:loc xlink:type="locator" xlink:href="#huge_b"              xlink:label="hg-b"/>
+    <link:loc xlink:type="locator" xlink:href="#huge_disjoint_total" xlink:label="hd-tot"/>
+    <link:calculationArc xlink:type="arc" xlink:from="hg-tot" xlink:to="hg-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="hg-tot" xlink:to="hg-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="hd-tot" xlink:to="hg-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="hd-tot" xlink:to="hg-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#dup_total" xlink:label="dp-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#dup_item"  xlink:label="shared-item"/>
+    <link:calculationArc xlink:type="arc" xlink:from="dp-tot" xlink:to="shared-item"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="2"/>
+  </link:calculationLink>
+
+  <!-- Second link of the SAME role R1: the duplicate edge must merge into one,
+       and the label "shared-item" is independently scoped in this link. -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/interval-cases">
+    <link:loc xlink:type="locator" xlink:href="#dup_total" xlink:label="dp-tot-2"/>
+    <link:loc xlink:type="locator" xlink:href="#dup_item"  xlink:label="shared-item"/>
+    <link:calculationArc xlink:type="arc" xlink:from="dp-tot-2" xlink:to="shared-item"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="2" use="optional"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R2: nil / zero / missing / conflict ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/coverage-cases">
+
+    <link:loc xlink:type="locator" xlink:href="#zero_total" xlink:label="z-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#zero_item"  xlink:label="z-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="z-tot" xlink:to="z-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#nil_total" xlink:label="n-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#nil_item"  xlink:label="n-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="n-tot" xlink:to="n-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#missing_total"  xlink:label="m-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#missing_item_a" xlink:label="m-a"/>
+    <link:loc xlink:type="locator" xlink:href="#missing_item_b" xlink:label="m-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="m-tot" xlink:to="m-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="m-tot" xlink:to="m-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#conflict_total" xlink:label="cf-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#conflict_item"  xlink:label="cf-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="cf-tot" xlink:to="cf-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R3: dimensions and units must not be crossed ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/coordinate-cases">
+
+    <link:loc xlink:type="locator" xlink:href="#dim_total" xlink:label="d-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#dim_item"  xlink:label="d-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="d-tot" xlink:to="d-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+
+    <link:loc xlink:type="locator" xlink:href="#eur_total" xlink:label="e-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#eur_item"  xlink:label="e-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="e-tot" xlink:to="e-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R4: two layers, no fabricated intermediate ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/two-layer">
+
+    <link:loc xlink:type="locator" xlink:href="#layer_top"  xlink:label="l-top"/>
+    <link:loc xlink:type="locator" xlink:href="#layer_mid"  xlink:label="l-mid"/>
+    <link:loc xlink:type="locator" xlink:href="#layer_leaf" xlink:label="l-leaf"/>
+    <link:calculationArc xlink:type="arc" xlink:from="l-top" xlink:to="l-mid"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="l-mid" xlink:to="l-leaf"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R5: priority override across two links ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/priority-override">
+    <link:loc xlink:type="locator" xlink:href="#isolated_total" xlink:label="i-tot"/>
+    <link:loc xlink:type="locator" xlink:href="#isolated_item"  xlink:label="i-it"/>
+    <link:calculationArc xlink:type="arc" xlink:from="i-tot" xlink:to="i-it"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="3" priority="0"/>
+  </link:calculationLink>
+
+  <!-- Same role, second link: weight 1 at priority 5 overrides the weight-3 edge. -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/priority-override">
+    <link:loc xlink:type="locator" xlink:href="#isolated_total" xlink:label="i-tot2"/>
+    <link:loc xlink:type="locator" xlink:href="#isolated_item"  xlink:label="i-it2"/>
+    <link:calculationArc xlink:type="arc" xlink:from="i-tot2" xlink:to="i-it2"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="5"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R6: highest-layer prohibition ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/prohibition">
+    <link:loc xlink:type="locator" xlink:href="#prohibit_a" xlink:label="p-a"/>
+    <link:loc xlink:type="locator" xlink:href="#prohibit_b" xlink:label="p-b"/>
+    <link:calculationArc xlink:type="arc" xlink:from="p-a" xlink:to="p-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="2" use="optional"/>
+  </link:calculationLink>
+
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/prohibition">
+    <link:loc xlink:type="locator" xlink:href="#prohibit_a" xlink:label="p-a2"/>
+    <link:loc xlink:type="locator" xlink:href="#prohibit_b" xlink:label="p-b2"/>
+    <link:calculationArc xlink:type="arc" xlink:from="p-a2" xlink:to="p-b2"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" priority="4" use="prohibited"/>
+  </link:calculationLink>
+
+  <!-- ============ network role R7: prohibition breaks what would be a cycle ============ -->
+  <link:calculationLink xlink:type="extended"
+                        xlink:role="http://example.com/role/broken-cycle">
+    <link:loc xlink:type="locator" xlink:href="#cycle_a" xlink:label="c-a"/>
+    <link:loc xlink:type="locator" xlink:href="#cycle_b" xlink:label="c-b"/>
+    <link:loc xlink:type="locator" xlink:href="#cycle_c" xlink:label="c-c"/>
+    <link:calculationArc xlink:type="arc" xlink:from="c-a" xlink:to="c-b"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <link:calculationArc xlink:type="arc" xlink:from="c-b" xlink:to="c-c"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1"/>
+    <!-- This third edge would close A -> B -> C -> A; it is prohibited, so the
+         effective graph is the acyclic chain A -> B -> C and must be accepted. -->
+    <link:calculationArc xlink:type="arc" xlink:from="c-c" xlink:to="c-a"
+                         xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item"
+                         weight="1" use="prohibited"/>
+  </link:calculationLink>
+
+</link:linkbase>
