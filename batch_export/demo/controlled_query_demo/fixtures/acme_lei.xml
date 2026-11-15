@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Entity "甲": scheme http://example.com/lei, identifier ACME-7. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:m="http://example.com/units"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <context id="c1">
+    <entity>
+      <identifier scheme="http://example.com/lei">ACME-7</identifier>
+    </entity>
+    <period>
+      <startDate>2024-01-01</startDate>
+      <endDate>2024-12-31</endDate>
+    </period>
+  </context>
+
+  <unit id="u-money">
+    <measure>m:USD</measure>
+  </unit>
+
+  <ex:Revenue contextRef="c1" unitRef="u-money" decimals="2">1000.50</ex:Revenue>
+  <ex:Assets contextRef="c1" unitRef="u-money" decimals="0">5000</ex:Assets>
+  <ex:Note contextRef="c1" xml:lang="en">lei note</ex:Note>
+
+</xbrl>

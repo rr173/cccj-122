@@ -248,3 +248,35 @@ python3 -m taxonomy_package.cli query    REGISTRY --digest D --uri URI --json
 退出码：`2` 调用错误、`3` 登记目录损坏、`4` 包格式/解析失败、`5` 原子发布
 失败。目录格式、URI 重写与越界防护、依赖环处理、离线搬迁方法与支持范围详见
 [`taxonomy_package/README.md`](taxonomy_package/README.md)。
+
+
+---
+
+## 受控分析查询（`controlled_query/`）
+
+在同一份 SQLite 事实仓之上新增一个**本地受控分析查询入口**：管理员提供
+关系目录（公开关系、可查询字段、行属主 `(scheme, identifier)` 的关联路径）
+和授权策略（身份、组、按企业二元组的 full / summary / deny），调用者明确
+指定一个已登记身份和一条 SQL，程序在该身份可见的数据上执行查询并返回带
+类型结果。防护不靠字符串黑名单：通过结构检查（SQLGlot，显式允许清单）
+的语句在**只含授权行的私有内存 SQLite 库**上执行，物理表在执行环境里
+根本不存在；summary 遮蔽在暂存时完成，先于筛选、连接、分组、聚合与排序；
+属主链、策略裁定与全部业务行对应 WAL 下的同一个读取时点。它不修改源库、
+不产生侧车文件，原有七个入口均保持不变。
+
+```bash
+python3 -m unittest discover -s tests                              # 481 个测试
+python3 -I demo/controlled_query_demo/run_controlled_query_demo.py  # 116 项验收断言
+bash demo/controlled_query_demo/run_cli_demo.sh                     # 终端走查
+
+python3 -m controlled_query.cli run warehouse.sqlite \
+    --catalog catalog.json --policy policy.json \
+    --identity alice --sql-file query.sql --result out.json
+python3 -m controlled_query.cli check-config warehouse.sqlite \
+    --catalog catalog.json --policy policy.json
+```
+
+退出码：`2` 调用错误（含未知身份）、`3` 目录/策略/数据契约错误、`4` SQL
+超出批准范围、`5` 执行失败。目录与策略格式、属主路径与目标键契约、支持
+的 SQL 子集、结果编码与信任边界详见
+[`controlled_query/README.md`](controlled_query/README.md)。

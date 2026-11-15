@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A third entity (lei, OTHER-9) that no demo identity may see. -->
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:ex="http://example.com/co"
+      xmlns:m="http://example.com/units"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <context id="c1">
+    <entity>
+      <identifier scheme="http://example.com/lei">OTHER-9</identifier>
+    </entity>
+    <period>
+      <instant>2024-12-31</instant>
+    </period>
+  </context>
+
+  <unit id="u-money">
+    <measure>m:USD</measure>
+  </unit>
+
+  <ex:Revenue contextRef="c1" unitRef="u-money" decimals="2">999</ex:Revenue>
+
+</xbrl>
