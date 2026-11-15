@@ -183,3 +183,30 @@ python3 -m wal_decode.cli decode --manifest manifest.json --out out/
 checkpoint 后复制、连接存活、关自动 checkpoint、单 checkpoint 周期、静止点复制）、
 输出字段与限制详见 [`wal_decode/README.md`](wal_decode/README.md)。该入口不是备份
 存储、恢复命令或日志消费状态库，原有四个入口均保持不变。
+
+
+---
+
+## 带逐行来源的查询（`provenance_query/`）
+
+在已接入的 SQLite 事实库之上，新增一个**只读**的带逐行来源的查询入口。它执行
+一条受限的关系 SELECT，把重复结果压成一个带存储类别的值元组和**精确重数**，
+并给出可计算的来源表达式（基础行令牌上的加/乘共享 DAG）。之后只凭结果文件就能
+读取压缩结果与来源图，或指定要排除的基础行、在表达式上重新求值，得到删行后
+每个既有结果的重数；源库搬走或删除后仍然可用。它不读取 WAL、不登记人工加工
+关系、不统计历史提交、不调整已接入的事实冲突，也不修改原库。
+
+```bash
+python3 -m unittest discover -s tests      # 298 个测试（原 211 + 新增 87）
+python3 -I demo/run_provenance_query_demo.py   # 33 项手写断言，含真实 XBRL 仓
+
+python3 -m provenance_query.cli build  warehouse.sqlite query.sql result.sqlite
+python3 -m provenance_query.cli read   result.sqlite --json
+python3 -m provenance_query.cli eval   result.sqlite --exclude "facts(id=1)"
+python3 -m provenance_query.cli verify result.sqlite
+```
+
+退出码：`2` 调用错误、`3` 不支持的 SQL、`4` 构建失败。支持范围、来源代数、
+结果文件格式、排除身份语法、只读快照保证与天文数量紧凑性验收详见
+[`provenance_query/README.md`](provenance_query/README.md)。原有接入、导出、
+计算检查、备份与 WAL 解码入口均保持不变。

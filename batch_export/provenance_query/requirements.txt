@@ -1,0 +1,3 @@
+# Provenance-carrying query package dependencies.
+# Only third-party dependency; everything else is the Python standard library.
+sqlglot==30.31.0
