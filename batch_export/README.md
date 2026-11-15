@@ -210,3 +210,41 @@ python3 -m provenance_query.cli verify result.sqlite
 结果文件格式、排除身份语法、只读快照保证与天文数量紧凑性验收详见
 [`provenance_query/README.md`](provenance_query/README.md)。原有接入、导出、
 计算检查、备份与 WAL 解码入口均保持不变。
+
+
+---
+
+## 离线 XBRL Taxonomy Package 接入（`taxonomy_package/`）
+
+新增一个**离线的 taxonomy package 登记目录**：把符合 XBRL Taxonomy Package
+1.0 布局的 ZIP 以原始 ZIP 的 SHA-256 登记，严格定位共同顶层目录下的
+`META-INF/taxonomyPackage.xml` 与 `META-INF/catalog.xml`，按命名空间 URI
+读取 identifier/名称/版本/入口（入口 href 折叠生效的 `xml:base`），只支持
+OASIS `rewriteURI` 且对未知目录规则明确拒绝；再从指定入口 schema 出发，
+解析 import/include/redefine 与 linkbase reference 的**实际依赖闭包**。
+相对引用先按文档逻辑 URI 求绝对 URI，再做最长前缀 rewrite，绝不先当本地
+文件名，也不为无匹配规则的公开 URI 联网。绝对路径、盘符、`..` 越界、重复
+规范化路径与符号链接成员全部拒绝；同摘要重复接入复用身份不复制，同
+identifier/version 不同内容按版本冲突拒绝。目录原子发布、拒绝覆盖，离线
+核验能对缺文件、字节改动、解析关系不一致报出具体成员。它不读企业实例、
+不写事实仓、不做计算核查，原有六个入口均保持不变。
+
+```bash
+python3 -m unittest tests.test_taxonomy_package_parsing \
+                     tests.test_taxonomy_package_service \
+                     tests.test_taxonomy_package_cli -v   # 74 个新增测试
+python3 -I demo/taxonomy_package_demo/run_taxonomy_demo.py  # 41 项端到端验收
+bash demo/taxonomy_package_demo/run_taxonomy_cli_demo.sh    # 终端退出码走查
+
+python3 -m taxonomy_package.cli init     REGISTRY
+python3 -m taxonomy_package.cli register REGISTRY PKG.zip
+python3 -m taxonomy_package.cli list     REGISTRY --json
+python3 -m taxonomy_package.cli show     REGISTRY --digest D --json
+python3 -m taxonomy_package.cli resolve  REGISTRY --digest D --json
+python3 -m taxonomy_package.cli verify   REGISTRY --json
+python3 -m taxonomy_package.cli query    REGISTRY --digest D --uri URI --json
+```
+
+退出码：`2` 调用错误、`3` 登记目录损坏、`4` 包格式/解析失败、`5` 原子发布
+失败。目录格式、URI 重写与越界防护、依赖环处理、离线搬迁方法与支持范围详见
+[`taxonomy_package/README.md`](taxonomy_package/README.md)。
